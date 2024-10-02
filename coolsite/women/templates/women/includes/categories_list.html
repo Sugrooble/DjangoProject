@@ -1,0 +1,7 @@
+{% for cat in categories %}
+    {% if cat.id == cat_selected %}
+        {{ cat_name }} {% if not forloop.last %} | {% endif %}
+    {% else %}
+        <a href="{% url 'show_cat' cat.id %}">{{ cat.cat_name }}</a> {% if not forloop.last %} | {% endif %}
+    {% endif %}
+{% endfor %}
