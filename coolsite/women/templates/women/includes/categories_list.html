@@ -1,4 +1,4 @@
-{% for cat in categories %}
+{% for cat in cats %}
     {% if cat.id == cat_selected %}
         {{ cat_name }} {% if not forloop.last %} | {% endif %}
     {% else %}
