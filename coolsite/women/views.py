@@ -1,7 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
+
+from women.models import Women
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
@@ -26,10 +28,11 @@ cats_db = [
 def main_page(request):
     # t = render_to_string('women/index.html') # Аналогично функции render
     # return HttpResponse(t)
+    posts = Women.objects.filter(is_published=1)
     data = {
         'title': 'Главная страница',
         'menu': menu,
-        'posts': data_db,
+        'posts': posts,
         'cat_selected': 0
     }
     return render(request, 'women/index.html', data)
@@ -46,10 +49,11 @@ def about(request):
 
 
 def categories(request, cat_id):
+    posts = Women.objects.filter(is_published=1)
     data = {
         'title': 'Отображение по рубрикам',
         'menu': menu,
-        'posts': data_db,
+        'posts': posts,
         'cat_selected': cat_id
     }
     return render(request, 'women/index.html', data)
@@ -72,7 +76,25 @@ def archive(request, year):
 
 
 def show_post(request, post_id):
-    return HttpResponse(f'<h1>Статья под номером {post_id}</h1>')
+    post = get_object_or_404(Women, pk=post_id)
+    data = {
+        'title': 'Главная страница',
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1
+    }
+    return render(request, 'women/post.html', data)
+
+
+def show_post_by_slug(request, post_slug):
+    post = get_object_or_404(Women, slug=post_slug)
+    data = {
+        'title': 'Главная страница',
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1
+    }
+    return render(request, 'women/post.html', data)
 
 
 def add_post(request):
