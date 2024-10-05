@@ -28,7 +28,7 @@ cats_db = [
 def main_page(request):
     # t = render_to_string('women/index.html') # Аналогично функции render
     # return HttpResponse(t)
-    posts = Women.objects.filter(is_published=1)
+    posts = Women.published.all()
     data = {
         'title': 'Главная страница',
         'menu': menu,
@@ -49,7 +49,7 @@ def about(request):
 
 
 def categories(request, cat_id):
-    posts = Women.objects.filter(is_published=1)
+    posts = Women.published.all()
     data = {
         'title': 'Отображение по рубрикам',
         'menu': menu,
