@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 
-from women.models import Women
+from women.models import Women, Category
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
@@ -49,21 +49,29 @@ def about(request):
 
 
 def categories(request, cat_id):
-    posts = Women.published.all()
+    category = get_object_or_404(Category, pk=cat_id)
+    posts = Women.published.filter(cat_id=category.pk)
+
     data = {
-        'title': 'Отображение по рубрикам',
+        'title': f'Рубрика: {category.name}',
         'menu': menu,
         'posts': posts,
-        'cat_selected': cat_id
+        'cat_selected': category.pk
     }
     return render(request, 'women/index.html', data)
 
 
 def categories_by_slug(request, cat_slug):
-    if 'music' in cat_slug and cat_slug != 'music':
-        uri = reverse('cats_slug', args=('music',))
-        return redirect(uri)
-    return HttpResponse(f'<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>')
+    category = get_object_or_404(Category, slug=cat_slug)
+    posts = Women.published.filter(cat_id=category.pk)
+
+    data = {
+        'title': f'Рубрика: {category.name}',
+        'menu': menu,
+        'posts': posts,
+        'cat_selected': category.pk
+    }
+    return render(request, 'women/index.html', data)
 
 
 def archive(request, year):

@@ -14,6 +14,17 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('show_cat_by_slug', kwargs={'cat_slug': self.slug})
+
+
+class TagsPost(models.Model):
+    tag = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+
+    def __str__(self):
+        return self.tag
+
 
 class Women(models.Model):
     class Status(models.IntegerChoices):
@@ -26,10 +37,11 @@ class Women(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)
-    cat = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='posts')
+    cat = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='posts') # Если модель, с которой связан внешний ключ, объявлена после текущей модели, её название можно передать в виде строки
+    tags = models.ManyToManyField(TagsPost, blank=True, related_name='tags')
 
     published = PublishedManager()
-    objects = models.Manager()
+    objects = models.Manager() # Если в классе объявлен кастомный менеджер записей, базовый objects становится недоступен и его нужно объявить явно
 
     def __str__(self):
         return self.title

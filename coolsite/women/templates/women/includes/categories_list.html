@@ -2,6 +2,6 @@
     {% if cat.id == cat_selected %}
         {{ cat_name }} {% if not forloop.last %} | {% endif %}
     {% else %}
-        <a href="{% url 'show_cat' cat.id %}">{{ cat.cat_name }}</a> {% if not forloop.last %} | {% endif %}
+        <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a> {% if not forloop.last %} | {% endif %}
     {% endif %}
 {% endfor %}
