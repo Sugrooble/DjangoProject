@@ -3,25 +3,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 
-from women.models import Women, Category
+from women.models import Women, Category, TagsPost
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'Добавить статью', 'url_name': 'add_post'},
     {'title': 'Обратная связь', 'url_name': 'contact'},
     {'title': 'Войти', 'url_name': 'login'},
-]
-
-data_db = [
-    {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография Анджелины Джоли', 'is_published': True},
-    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
-    {'id': 3, 'title': 'Линдси Лохан', 'content': 'Биография Линдси Лохан', 'is_published': True},
-]
-
-cats_db = [
-    {'id': 1, 'cat_name': 'Актрисы'},
-    {'id': 2, 'cat_name': 'Певицы'},
-    {'id': 3, 'cat_name': 'Спортсменки'},
 ]
 
 
@@ -103,6 +91,19 @@ def show_post_by_slug(request, post_slug):
         'cat_selected': 1
     }
     return render(request, 'women/post.html', data)
+
+
+def show_tag_postlist(request, tag_slug):
+    tag = get_object_or_404(TagsPost, slug=tag_slug)
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)
+
+    data = {
+        'title': f'Статьи по тэгу {tag.tag}',
+        'menu': menu,
+        'posts': posts,
+        'cat_selected': 0
+    }
+    return render(request, 'women/index.html', data)
 
 
 def add_post(request):
