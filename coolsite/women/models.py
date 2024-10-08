@@ -42,6 +42,7 @@ class Women(models.Model):
     is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)
     cat = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='posts') # Если модель, с которой связан внешний ключ, объявлена после текущей модели, её название можно передать в виде строки
     tags = models.ManyToManyField(TagsPost, blank=True, related_name='tags')
+    husband = models.OneToOneField('Husband', on_delete=models.SET_NULL, blank=True, null=True, related_name='woman')
 
     published = PublishedManager()
     objects = models.Manager() # Если в классе объявлен кастомный менеджер записей, базовый objects становится недоступен и его нужно объявить явно
@@ -57,3 +58,11 @@ class Women(models.Model):
 
     def get_absolute_url(self):
         return reverse('show_post_by_slug', kwargs={'post_slug': self.slug})
+
+
+class Husband(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.name
