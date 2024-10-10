@@ -16,7 +16,7 @@ menu = [
 def main_page(request):
     # t = render_to_string('women/index.html') # Аналогично функции render
     # return HttpResponse(t)
-    posts = Women.published.all()
+    posts = Women.published.all().select_related('cat')
     data = {
         'title': 'Главная страница',
         'menu': menu,
@@ -38,7 +38,7 @@ def about(request):
 
 def categories(request, cat_id):
     category = get_object_or_404(Category, pk=cat_id)
-    posts = Women.published.filter(cat_id=category.pk)
+    posts = Women.published.filter(cat_id=category.pk).select_related('cat')
 
     data = {
         'title': f'Рубрика: {category.name}',
@@ -51,7 +51,7 @@ def categories(request, cat_id):
 
 def categories_by_slug(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
-    posts = Women.published.filter(cat_id=category.pk)
+    posts = Women.published.filter(cat_id=category.pk).select_related('cat')
 
     data = {
         'title': f'Рубрика: {category.name}',
@@ -95,7 +95,7 @@ def show_post_by_slug(request, post_slug):
 
 def show_tag_postlist(request, tag_slug):
     tag = get_object_or_404(TagsPost, slug=tag_slug)
-    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related('cat')
 
     data = {
         'title': f'Статьи по тэгу {tag.tag}',

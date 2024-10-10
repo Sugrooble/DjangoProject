@@ -10,6 +10,7 @@
     {% for post in posts %}
     <li>
         <h2>{{ post.title }}</h2>
+        <p><b>Категория:</b> {{ post.cat.name }}</p>
         <p>{{ post.content }}</p>
         <p><a href="{{ post.get_absolute_url }}">Читать статью</a></p>
         {% if not forloop.last %}
